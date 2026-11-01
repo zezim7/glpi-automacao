@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "GLPI Planejador",
+  "version": "1.4.0",
+  "description": "Move chamados Novo para Em atendimento (planejado) enquanto a lista de chamados do GLPI estiver aberta.",
+  "permissions": [
+    "storage",
+    "alarms"
+  ],
+  "action": {
+    "default_title": "GLPI Planejador",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*/*front/ticket.php*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}

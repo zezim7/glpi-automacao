@@ -1,0 +1,69 @@
+# GLPI Planejador 1.4.0
+
+Extensão para Chrome e Microsoft Edge. Na lista de chamados filtrada por "Status é Novo"
+(Assistência > Chamados, página /front/ticket.php), marca os chamados Novo,
+abre Ações > Atualizar > Características - Status > Em atendimento (planejado) e envia.
+Em qualquer outra lista (Todos, Solucionados, Fechados, lixeira...) não faz nada.
+
+## Instalação
+1. Extraia o zip para uma pasta permanente.
+2. Abra chrome://extensions (ou edge://extensions) e ative o Modo do desenvolvedor.
+3. Carregar sem compactação > selecione a pasta glpi-planejador.
+4. Abra a lista de chamados do GLPI. A automação já vem ativada.
+
+## Atualizar a extensão
+Substitua os arquivos, clique em Recarregar na página de extensões e atualize (F5) a aba do GLPI.
+
+## Como usar
+- Deixe uma aba com a lista de chamados filtrada por "Status é Novo" (como na sua tela, ou pelo
+  quadro "Chamados novos" no topo da lista). Sem esse filtro a extensão fica parada.
+- A extensão verifica a página a cada 5 s. Se não houver chamado Novo, recarrega a lista
+  no intervalo configurado (padrão 60 s; desative no popup se não quiser) para enxergar chamados novos.
+- Botão "Executar agora" no popup: roda na hora e mostra o resultado.
+- O popup mostra a última mensagem (sucesso ou o motivo exato da falha).
+
+## Janela dedicada ao GLPI (uso recomendado)
+Deixe um Chrome/janela só com a lista de chamados aberta e navegue em outra janela.
+- A extensão age na aba ATIVA de cada janela, mesmo com a janela minimizada, atrás de outras
+  ou em outro monitor. Se você trocar para outra aba dessa mesma janela, ela pausa.
+- Com a janela minimizada/oculta, um despertador (service worker) a acorda a cada 30 s;
+  com a janela visível a verificação é a cada 5 s. O recarregamento da lista, quando
+  a janela está oculta, também ocorre em múltiplos de 30 s.
+- Para o computador não atrapalhar: não deixe o PC suspender/bloquear a sessão, e em
+  chrome://settings/performance adicione o site do GLPI às exceções do "Economia de memória"
+  (senão o Chrome pode descartar a aba e a automação para).
+- Se usar o mesmo perfil do Chrome para navegar, a extensão também age em qualquer janela
+  em que a lista de chamados seja a aba ativa. Para isolar, instale-a só em um perfil/Chrome dedicado.
+
+## Segurança embutida
+- Só age na lista filtrada por "Status é Novo". Em qualquer outra lista não marca, não envia e
+  não recarrega nada, nem com "Executar agora". Se a lista tiver algum chamado que não é Novo,
+  também não faz nada.
+- O GLPI guarda a última pesquisa para todas as abas. Para a aba da automação não virar outra
+  lista quando você pesquisa "solucionados" em outra aba, a extensão grava o filtro Novo na URL.
+- Só marca linhas com Status = Novo. Se houver linha de outro status marcada na lista, não faz nada.
+- Só controla a janela Ações que ela mesma abriu; não mexe em janelas abertas por você.
+- Cada chamado tem no máximo 2 tentativas; depois pausa 10 min (evita laço infinito).
+- Se algo falhar, fecha a janela, desmarca os chamados e registra o motivo no popup.
+- Depois do envio o GLPI volta para a lista com os chamados enviados ainda marcados; a extensão
+  desmarca só esses (os que ela mesma enviou), para a lista continuar recarregando.
+- Só roda nas páginas .../front/ticket.php; não tem acesso aos outros sites.
+
+## Observações
+- Mantenha a aba aberta e logada no GLPI. Se a sessão expirar, a extensão não consegue agir.
+- Chrome/Edge podem "dormir" abas em segundo plano (Memory Saver/Abas eficientes): adicione o
+  site do GLPI às exceções para o monitoramento não parar.
+
+## Novidades da 1.4.0
+- Só age na lista filtrada por "Status é Novo". Antes agia em qualquer lista de chamados que
+  tivesse algum Novo (ex.: "Todos") e recarregava qualquer lista, inclusive a de concluídos.
+- Se a aba da automação sair da lista Novo, o popup avisa que ela está parada.
+
+## Novidades da 1.3.0
+- Corrigido: depois do primeiro envio a lista parava de recarregar (os chamados enviados voltavam
+  marcados) e chamados novos não eram mais tratados. Na lista filtrada por Novo isso acontecia
+  quando um chamado não mudava de status: todos os outros esperavam até 10 min.
+- Corrigido: "Executar agora" mostrava "Não consegui falar com a página" mesmo quando dava certo.
+- Corrigido: duas verificações simultâneas (timer + despertador) podiam falhar juntas e pausar o
+  chamado por 10 min sem enviar.
+- A extensão deixou de rodar em todos os sites; a identificação do chamado usa a caixa da linha.
